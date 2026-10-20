@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nuestra Galaxia ✨</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at bottom, #1b1035 0%, #080314 60%, #020108 100%);
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #space-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Estrellitas diminutas de fondo */
+    .bg-star {
+      position: absolute;
+      background-color: #ffffff;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: twinkle-bg infinite alternate ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes twinkle-bg {
+      0% { opacity: 0.1; transform: scale(0.8); }
+      100% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    /* Estrellas interactivas principales */
+    .star {
+      position: absolute;
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 30px;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      text-shadow: 0 0 10px #ffffff, 0 0 20px #d697ff, 0 0 30px #a259ff;
+      padding: 16px;
+      z-index: 9999;
+      touch-action: manipulation;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #e0aaff;
+      text-shadow: 0 0 20px rgba(214, 151, 255, 0.8);
+      pointer-events: none;
+    }
+
+    p.subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    /* Ventana Emergente (Modal) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 2, 10, 0.92);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: rgba(28, 18, 52, 0.95);
+      border: 1px solid rgba(214, 151, 255, 0.4);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .media-container {
+      width: 100%;
+      max-height: 320px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .modal-media {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    .modal-text {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-weight: 300;
+      white-space: pre-line;
+      display: none;
+    }
+
+    .close-btn {
+      background: linear-gradient(135deg, #c77dff, #7b2cbf);
+      border: none;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="space-bg"></div>
+
+  <div class="content">
+    <h1>Feliz Primer Mes ✨</h1>
+    <p class="subtitle">Haz clic en cada estrella para descubrir un secreto.</p>
+  </div>
+
+  <div class="modal" id="messageModal">
+    <div class="modal-content">
+      <div class="media-container" id="mediaContainer"></div>
+      <div class="modal-text" id="modalText"></div>
+      <button class="close-btn" id="closeBtn">Cerrar ✨</button>
+    </div>
+  </div>
+
+  <script>
+    var galaxiaDatos = [
+      {
+        type: "text",
+        text: "Qué peligro esa mujer pensé al escucharte por primera vez. Peligrosamente mujer, peligrosamente tú. Y yo, un hombre de aventura y amante de los desafíos, cedí ciegamente a esa sonrisa que aceleraba peligrosamente mis latidos. Una parte dentro de mí me decía tonto, la otra afortunado, pero ninguna de las dos partes jamás pensaron en lo peligrosamente que estaría de ti enamorado. Enamorado de unos peligrosos ojos que paralizan, de unos peligrosos labios que cautivan, de un peligroso cabello que hipnotiza, de un hermoso cuerpo que desde lo lejos al deseo incita. Enamorado de ti, de la maravillosa mujer que eres, peligrosamente mujer, peligrosamente tú."
+      },
+      {
+        type: "text",
+        text: "Dime, ¿crees en la magia? Porque cada momento contigo se siente como algo mágico, como salido de un cuento. Por ratos, mientras hablo contigo, se me viene a la mente la escena de Peter Pan cuando Campanita está muriendo y la reaniman repitiendo que creen en las hadas. Y mágicamente vuelve a la vida. No te lo había dicho, pero eso provoca que sienta mariposas en el estómago. Porque siento que valió la espera que encontré a mi fiel compañera, la otra mitad de la cual no quiero separarme nunca más. Mi querida hada chalada."
+      },
+      {
+        type: "text",
+        text: "Dicen que algunos encuentros lo cambian todo y el nuestro es uno de ellos. Me haces querer ser mejor que ayer y por eso estoy totalmente agradecido contigo. Gracias."
+      },
+      { type: "text", text: "Las semillas no son tan malas después de todo, mi pichoncita. 💖" },
+      { type: "text", text: "No a esas preguntas que no tienen respuesta. ✨" },
+      { type: "text", text: "Me pareció muy lindo cuando le hablaste a la planta inexistente en audio para que yo escuchara. Qué linda. 🌱❤️" },
+      { type: "text", text: "Gracias por los dibujos. Están muy lindos, me encantaron mucho. 🎨✨" },
+      { type: "text", text: "Eres lo mejor que me pudo haber pasado. ✨" },
+      { type: "text", text: "Te amo, mi amor. ❤️" },
+      { type: "text", text: "Gracias por existir, mi princesa. 👑✨" },
+      { type: "text", text: "El amor no conoce fronteras ni distancias. Al superar esta etapa seremos muy felices. 💕" },
+      { type: "text", text: "Eres la mejor, nunca lo olvides. ✨" },
+      { type: "text", text: "Qué peligro, Guillermina. 😏✨" },
+      { type: "text", text: "Nuestro primer mes de novios. 🎉❤️" },
+      { type: "text", text: "Significas mucho para mí. ✨" },
+      { type: "text", text: "Gracias por haber llegado a mi vida. Te amo. ❤️" }
+    ];
+
+    var spaceBg = document.getElementById('space-bg');
+    var modal = document.getElementById('messageModal');
+    var modalText = document.getElementById('modalText');
+    var mediaContainer = document.getElementById('mediaContainer');
+    var closeBtn = document.getElementById('closeBtn');
+
+    // Fondo de estrellitas decorativas
+    for (var k = 0; k < 60; k++) {
+      var bgStar = document.createElement('div');
+      bgStar.className = 'bg-star';
+      bgStar.style.left = Math.floor(Math.random() * 100) + '%';
+      bgStar.style.top = Math.floor(Math.random() * 100) + '%';
+      var sz = (Math.random() * 2 + 1).toFixed(1);
+      bgStar.style.width = sz + 'px';
+      bgStar.style.height = sz + 'px';
+      bgStar.style.animationDuration = (Math.random() * 3 + 2).toFixed(1)
