@@ -19,7 +19,6 @@
       position: relative;
     }
 
-    /* Fondo espacial con estrellas fijas dispersas */
     #space-bg {
       position: absolute;
       width: 100%;
@@ -50,7 +49,7 @@
       color: #d697ff;
     }
 
-    /* Estrellas interactivas flotantes en la galaxia */
+    /* Estrellas interactivas flotantes */
     .star {
       position: absolute;
       cursor: pointer;
@@ -69,7 +68,7 @@
       100% { opacity: 1; transform: scale(1.2) translateY(-6px); }
     }
 
-    /* Posiciones estelares repartidas orgánicamente por la pantalla */
+    /* Posiciones estelares repartidas por la pantalla */
     .s1  { top: 12%; left: 15%; animation-delay: 0.2s; }
     .s2  { top: 18%; left: 75%; animation-delay: 0.8s; }
     .s3  { top: 28%; left: 38%; animation-delay: 0.4s; }
@@ -138,7 +137,6 @@
 <body>
 
   <div id="space-bg">
-    <!-- Estrellas flotantes distribuidas -->
     <div class="star s1" onclick="ver(0)">✦</div>
     <div class="star s2" onclick="ver(1)">✦</div>
     <div class="star s3" onclick="ver(2)">✦</div>
