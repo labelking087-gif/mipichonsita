@@ -32,7 +32,7 @@
       pointer-events: none;
     }
 
-    /* Silueta inferior de horizonte en tono morado noche */
+    /* Silueta inferior de horizonte */
     .horizon-silhouette {
       position: fixed;
       bottom: 0;
@@ -130,7 +130,7 @@
       margin-top: 10px;
     }
 
-    /* Estrellas flotantes de los mensajes */
+    /* Estrellas flotantes */
     .star {
       position: absolute;
       cursor: pointer;
@@ -194,7 +194,42 @@
     .s15 { top: 86%;  left: 44%;  animation-delay: 1.3s; font-size: 34px; }
     .s16 { top: 90%;  left: 14%;  animation-delay: 0.2s; font-size: 30px; }
     .s17 { top: 94%;  left: 70%;  animation-delay: 0.6s; font-size: 34px; color: #f472b6; }
-    .s18 { top: 96%;  left: 38%;  animation-delay: 1.0s; font-size: 36px; color: #ffd166; } /* Estrella One Piece */
+    .s18 { top: 96%;  left: 38%;  animation-delay: 1.0s; font-size: 36px; color: #ffd166; }
+
+    /* Animación Visual de Estrella Fugaz al Hacer Clic en el Botón 🌠 */
+    .shooting-star-animated {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 180px;
+      height: 3px;
+      background: linear-gradient(-45deg, rgba(255, 255, 255, 1), rgba(224, 170, 255, 0.8), transparent);
+      border-radius: 50%;
+      filter: drop-shadow(0 0 10px #ffffff);
+      transform: rotate(-35deg);
+      pointer-events: none;
+      z-index: 99999;
+      animation: shoot-action 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+
+    @keyframes shoot-action {
+      0% {
+        top: 10%;
+        right: -10%;
+        opacity: 0;
+        width: 0px;
+      }
+      30% {
+        opacity: 1;
+        width: 220px;
+      }
+      100% {
+        top: 80%;
+        right: 110%;
+        opacity: 0;
+        width: 50px;
+      }
+    }
 
     /* Partículas de Corazón */
     .heart-particle {
@@ -299,7 +334,6 @@
 </head>
 <body ondblclick="rainHearts(event)">
 
-  <!-- Canvas renderizado para el fondo estelar morado pastel -->
   <canvas id="space-canvas"></canvas>
   <div class="horizon-silhouette"></div>
 
@@ -467,6 +501,7 @@
     resizeCanvas();
     drawSpace();
 
+    /* Explosión de Corazones al Hacer Clic */
     function createHeartExplosion(x, y) {
       var hearts = ['💖', '✨', '🌸', '💕', '💜', '🏴‍☠️'];
       for (var i = 0; i < 8; i++) {
@@ -492,9 +527,18 @@
       }
     }
 
+    /* Pide un deseo con estrella fugaz visual cruzando la pantalla */
     function pideDeseo() {
+      var shooter = document.createElement('div');
+      shooter.className = 'shooting-star-animated';
+      document.body.appendChild(shooter);
+
       rainHearts();
-      alert("🌠 ¡Una estrella fugaz ha cruzado el cielo! Pide un deseo, mi amor... ✨");
+
+      setTimeout(function() {
+        shooter.remove();
+        alert("🌠 ¡Una estrella fugaz ha cruzado el cielo! Pide un deseo, mi amor... ✨");
+      }, 1000);
     }
 
     function ver(i, e) {
