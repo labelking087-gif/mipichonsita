@@ -196,50 +196,58 @@
     .s17 { top: 94%;  left: 70%;  animation-delay: 0.6s; font-size: 34px; color: #f472b6; }
     .s18 { top: 96%;  left: 38%;  animation-delay: 1.0s; font-size: 36px; color: #ffd166; }
 
-    /* Estrella Fugaz Suave, Grande y Elegante 🌠 */
+    /* Estrella Fugaz Realista con Cabeza Estelar y Estela Luminosa 🌠 */
     .shooting-star-animated {
       position: fixed;
-      width: 320px;
-      height: 4px;
-      background: linear-gradient(90deg, #ffffff 0%, rgba(243, 232, 255, 0.9) 35%, rgba(199, 125, 255, 0.3) 75%, transparent 100%);
-      border-radius: 100%;
-      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 35px rgba(214, 151, 255, 0.7));
+      width: 380px;
+      height: 6px;
       pointer-events: none;
       z-index: 99999;
       opacity: 0;
-      transform-origin: left center;
-      animation: shoot-gentle 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+      animation: shoot-real 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
     }
 
+    /* La Cabeza en forma de Estrella Radiante */
     .shooting-star-animated::before {
+      content: '✦';
+      position: absolute;
+      right: 0;
+      top: -18px;
+      font-size: 38px;
+      color: #ffffff;
+      text-shadow: 0 0 15px #ffffff, 0 0 30px #f472b6, 0 0 50px #c77dff;
+    }
+
+    /* La Estela Larga de Destellos */
+    .shooting-star-animated::after {
       content: '';
       position: absolute;
+      top: 0;
       left: 0;
-      top: -5px;
-      width: 14px;
-      height: 14px;
-      background: #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 0 20px #ffffff, 0 0 40px #e0aaff;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(199, 125, 255, 0.15) 30%, rgba(244, 114, 182, 0.6) 70%, #ffffff 100%);
+      border-radius: 100px;
+      box-shadow: 0 0 12px rgba(244, 114, 182, 0.8), 0 0 25px rgba(199, 125, 255, 0.5);
     }
 
-    @keyframes shoot-gentle {
+    @keyframes shoot-real {
       0% {
-        top: 2vh;
-        left: 105vw;
-        transform: rotate(-25deg);
+        top: -5vh;
+        left: 110vw;
+        transform: rotate(-30deg);
         opacity: 0;
       }
       15% {
         opacity: 1;
       }
       85% {
-        opacity: 0.8;
+        opacity: 0.9;
       }
       100% {
-        top: 88vh;
-        left: -35vw;
-        transform: rotate(-25deg);
+        top: 95vh;
+        left: -40vw;
+        transform: rotate(-30deg);
         opacity: 0;
       }
     }
@@ -258,7 +266,7 @@
       100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
     }
 
-    /* Modales Estables sin temblor */
+    /* Modales Estables */
     .modal {
       display: none;
       position: fixed;
@@ -283,7 +291,6 @@
       width: 92%;
       text-align: center;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8), 0 0 30px rgba(199, 125, 255, 0.3);
-      transform: translate3d(0, 0, 0);
     }
 
     .modal-text {
@@ -310,7 +317,7 @@
       box-shadow: 0 4px 15px rgba(199, 125, 255, 0.5);
     }
 
-    /* Botones Flotantes Fijos y Nítidos */
+    /* Botones Flotantes 100% Fijos y Sin Movimiento */
     .controls-bar {
       position: fixed;
       bottom: 22px;
@@ -326,6 +333,8 @@
       border: none;
       width: 52px;
       height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       border-radius: 50%;
       cursor: pointer;
       font-size: 22px;
@@ -333,8 +342,9 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 20px rgba(157, 78, 221, 0.6);
-      transform: translate3d(0, 0, 0);
-      -webkit-font-smoothing: antialiased;
+      outline: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     #yt-player {
@@ -541,7 +551,7 @@
       }
     }
 
-    /* Pide un deseo con estrella fugaz suave y majestuosa */
+    /* Pide un deseo con estrella fugaz majestuosa */
     function pideDeseo() {
       var shooter = document.createElement('div');
       shooter.className = 'shooting-star-animated';
@@ -552,7 +562,7 @@
       setTimeout(function() {
         shooter.remove();
         alert("🌠 ¡Una estrella fugaz ha cruzado el cielo! Pide un deseo, mi amor... ✨");
-      }, 2000);
+      }, 2300);
     }
 
     function ver(i, e) {
