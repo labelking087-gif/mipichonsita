@@ -21,7 +21,7 @@
       padding-bottom: 90px;
     }
 
-    /* Canvas de fondo estelar y nebulosa morada pastel */
+    /* Canvas de fondo estelar y animaciones físicas */
     #space-canvas {
       position: fixed;
       top: 0;
@@ -195,86 +195,6 @@
     .s16 { top: 90%;  left: 14%;  animation-delay: 0.2s; font-size: 30px; }
     .s17 { top: 94%;  left: 70%;  animation-delay: 0.6s; font-size: 34px; color: #f472b6; }
     .s18 { top: 96%;  left: 38%;  animation-delay: 1.0s; font-size: 36px; color: #ffd166; }
-
-    /* ESTRELLA FUGAZ REALISTA (DIRECCIÓN EXACTA DEL VIDEO) */
-    .shooting-star-animated {
-      position: fixed;
-      width: 260px;
-      height: 5px;
-      pointer-events: none;
-      z-index: 99999;
-      opacity: 0;
-      /* Inclinación exacta hacia la izquierda descendente */
-      transform: rotate(-35deg);
-      animation: meteor-fall 2.2s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
-    }
-
-    /* Cabeza del meteoro: Avanza en la punta izquierda */
-    .shooting-star-animated::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 14px;
-      height: 14px;
-      background: #ffffff;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 
-        0 0 15px 5px #ffffff,
-        0 0 35px 10px #ff758c,
-        0 0 60px 20px #c77dff;
-      z-index: 2;
-    }
-
-    /* Estela de cola: Se extiende hacia la DERECHA de la cabeza */
-    .shooting-star-animated::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      /* Gradiente que va de blanco intenso en la cabeza a desvanecido en la cola */
-      background: linear-gradient(90deg, #ffffff 0%, rgba(255, 117, 140, 0.8) 25%, rgba(199, 125, 255, 0.25) 65%, transparent 100%);
-      border-radius: 100px;
-      box-shadow: 0 0 12px rgba(255, 117, 140, 0.8), 0 0 25px rgba(199, 125, 255, 0.5);
-    }
-
-    @keyframes meteor-fall {
-      0% {
-        top: -5vh;
-        left: 105vw;
-        opacity: 0;
-      }
-      15% {
-        opacity: 1;
-      }
-      80% {
-        opacity: 0.9;
-      }
-      100% {
-        top: 90vh;
-        left: -35vw;
-        opacity: 0;
-      }
-    }
-
-    /* Polvo estelar de rastro */
-    .sparkle-trail {
-      position: fixed;
-      pointer-events: none;
-      z-index: 99998;
-      background: #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #ff758c;
-      animation: fade-sparkle 0.9s forwards ease-out;
-    }
-
-    @keyframes fade-sparkle {
-      0% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.1); }
-    }
 
     /* Partículas de Corazón */
     .heart-particle {
@@ -483,10 +403,12 @@
     var openedCount = 0;
     var totalStars = 18;
 
-    /* Renderizador del fondo espacial */
+    /* Renderizador del fondo espacial y física de la Estrella Fugaz */
     var canvas = document.getElementById('space-canvas');
     var ctx = canvas.getContext('2d');
     var stars = [];
+    var activeMeteor = null;
+    var meteorParticles = [];
     var width, height;
 
     function resizeCanvas() {
@@ -513,6 +435,7 @@
     function drawSpace() {
       ctx.clearRect(0, 0, width, height);
 
+      // Fondo de degradado espacial
       var bgGrad = ctx.createRadialGradient(width/2, height, 10, width/2, height/2, width);
       bgGrad.addColorStop(0, '#1d0f38');
       bgGrad.addColorStop(0.5, '#120726');
@@ -520,6 +443,7 @@
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
+      // Nebulosa en tono Morado Pastel
       var nebGrad1 = ctx.createRadialGradient(width * 0.45, height * 0.45, 20, width * 0.45, height * 0.45, width * 0.48);
       nebGrad1.addColorStop(0, 'rgba(199, 125, 255, 0.35)');
       nebGrad1.addColorStop(0.5, 'rgba(157, 78, 221, 0.18)');
@@ -529,6 +453,7 @@
       ctx.arc(width * 0.45, height * 0.45, width * 0.48, 0, Math.PI * 2);
       ctx.fill();
 
+      // Malla de estrellitas titilantes
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
         s.alpha += s.speed;
@@ -542,7 +467,96 @@
       }
       ctx.globalAlpha = 1;
 
+      // Dibujar Estrella Fugaz Fluida en Canvas si está activa
+      if (activeMeteor) {
+        updateAndDrawMeteor();
+      }
+
       requestAnimationFrame(drawSpace);
+    }
+
+    /* Animación Física Suave de la Estrella Fugaz */
+    function startFluidMeteor() {
+      activeMeteor = {
+        x: width * 0.9,
+        y: height * 0.05,
+        vx: -14,
+        vy: 9,
+        length: 220,
+        life: 1.0,
+        decay: 0.009
+      };
+      meteorParticles = [];
+    }
+
+    function updateAndDrawMeteor() {
+      var m = activeMeteor;
+      m.x += m.vx;
+      m.y += m.vy;
+      m.life -= m.decay;
+
+      if (m.life <= 0 || m.x < -200 || m.y > height + 200) {
+        activeMeteor = null;
+        return;
+      }
+
+      // Dibujar estela cónica de la cola
+      var angle = Math.atan2(m.vy, m.vx);
+      var tailX = m.x - Math.cos(angle) * m.length;
+      var tailY = m.y - Math.sin(angle) * m.length;
+
+      var trailGrad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+      trailGrad.addColorStop(0, 'rgba(255, 255, 255, ' + (m.life * 0.95) + ')');
+      trailGrad.addColorStop(0.2, 'rgba(244, 114, 182, ' + (m.life * 0.7) + ')');
+      trailGrad.addColorStop(0.6, 'rgba(199, 125, 255, ' + (m.life * 0.3) + ')');
+      trailGrad.addColorStop(1, 'transparent');
+
+      ctx.save();
+      ctx.strokeStyle = trailGrad;
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+      ctx.restore();
+
+      // Dibujar Cabeza Brillante
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#f472b6';
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Generar partículas de polvo estelar
+      if (Math.random() < 0.6) {
+        meteorParticles.push({
+          x: m.x + (Math.random() - 0.5) * 8,
+          y: m.y + (Math.random() - 0.5) * 8,
+          size: Math.random() * 2.5 + 1,
+          alpha: 1.0,
+          decay: Math.random() * 0.03 + 0.015
+        });
+      }
+
+      // Renderizar partículas
+      for (var p = meteorParticles.length - 1; p >= 0; p--) {
+        var part = meteorParticles[p];
+        part.alpha -= part.decay;
+        if (part.alpha <= 0) {
+          meteorParticles.splice(p, 1);
+          continue;
+        }
+        ctx.fillStyle = '#f3e8ff';
+        ctx.globalAlpha = part.alpha;
+        ctx.beginPath();
+        ctx.arc(part.x, part.y, part.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -575,30 +589,12 @@
       }
     }
 
-    /* Pide un deseo con estrella fugaz realista */
+    /* Pide un deseo con estrella fugaz ultra fluida */
     function pideDeseo() {
-      var shooter = document.createElement('div');
-      shooter.className = 'shooting-star-animated';
-      document.body.appendChild(shooter);
-
-      var interval = setInterval(function() {
-        var rect = shooter.getBoundingClientRect();
-        if (rect.x < 0 || rect.y > window.innerHeight) return;
-        var spark = document.createElement('div');
-        spark.className = 'sparkle-trail';
-        spark.style.left = (rect.x + Math.random() * 15) + 'px';
-        spark.style.top = (rect.y + Math.random() * 15) + 'px';
-        spark.style.width = (Math.random() * 4 + 2) + 'px';
-        spark.style.height = spark.style.width;
-        document.body.appendChild(spark);
-        setTimeout(function(s) { s.remove(); }, 800, spark);
-      }, 40);
-
+      startFluidMeteor();
       rainHearts();
 
       setTimeout(function() {
-        clearInterval(interval);
-        shooter.remove();
         alert("🌠 ¡Una estrella fugaz ha cruzado el cielo! Pide un deseo, mi amor... ✨");
       }, 2100);
     }
