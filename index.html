@@ -196,18 +196,20 @@
     .s17 { top: 94%;  left: 70%;  animation-delay: 0.6s; font-size: 34px; color: #f472b6; }
     .s18 { top: 96%;  left: 38%;  animation-delay: 1.0s; font-size: 36px; color: #ffd166; }
 
-    /* Estrella Fugaz Realista Estilo Video 🌠 */
+    /* ESTRELLA FUGAZ REALISTA (DIRECCIÓN EXACTA DEL VIDEO) */
     .shooting-star-animated {
       position: fixed;
-      width: 280px;
-      height: 4px;
+      width: 260px;
+      height: 5px;
       pointer-events: none;
       z-index: 99999;
       opacity: 0;
-      animation: shoot-down-left 2.2s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+      /* Inclinación exacta hacia la izquierda descendente */
+      transform: rotate(-35deg);
+      animation: meteor-fall 2.2s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
     }
 
-    /* Cabeza hiperbrillante con destello centelleante */
+    /* Cabeza del meteoro: Avanza en la punta izquierda */
     .shooting-star-animated::before {
       content: '';
       position: absolute;
@@ -219,13 +221,13 @@
       border-radius: 50%;
       transform: translate(-50%, -50%);
       box-shadow: 
-        0 0 15px 4px #ffffff,
-        0 0 30px 8px #ffb3c1,
-        0 0 50px 15px #c77dff;
+        0 0 15px 5px #ffffff,
+        0 0 35px 10px #ff758c,
+        0 0 60px 20px #c77dff;
       z-index: 2;
     }
 
-    /* Estela de cola de polvo estelar que le sigue por detrás */
+    /* Estela de cola: Se extiende hacia la DERECHA de la cabeza */
     .shooting-star-animated::after {
       content: '';
       position: absolute;
@@ -233,22 +235,20 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to right, #ffffff 0%, #ff8fa3 20%, #c77dff 50%, transparent 100%);
+      /* Gradiente que va de blanco intenso en la cabeza a desvanecido en la cola */
+      background: linear-gradient(90deg, #ffffff 0%, rgba(255, 117, 140, 0.8) 25%, rgba(199, 125, 255, 0.25) 65%, transparent 100%);
       border-radius: 100px;
-      box-shadow: 0 0 12px rgba(255, 143, 163, 0.8), 0 0 25px rgba(199, 125, 255, 0.5);
+      box-shadow: 0 0 12px rgba(255, 117, 140, 0.8), 0 0 25px rgba(199, 125, 255, 0.5);
     }
 
-    /* Trayectoria limpia descendente de arriba-derecha hacia abajo-izquierda */
-    @keyframes shoot-down-left {
+    @keyframes meteor-fall {
       0% {
-        top: 5vh;
+        top: -5vh;
         left: 105vw;
-        transform: rotate(145deg) scaleX(0.4);
         opacity: 0;
       }
       15% {
         opacity: 1;
-        transform: rotate(145deg) scaleX(1.2);
       }
       80% {
         opacity: 0.9;
@@ -256,25 +256,24 @@
       100% {
         top: 90vh;
         left: -35vw;
-        transform: rotate(145deg) scaleX(0.5);
         opacity: 0;
       }
     }
 
-    /* Partículas Chispas de la Estrella Fugaz */
+    /* Polvo estelar de rastro */
     .sparkle-trail {
       position: fixed;
       pointer-events: none;
       z-index: 99998;
       background: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 8px #ffb3c1;
-      animation: fade-sparkle 1s forwards ease-out;
+      box-shadow: 0 0 8px #ff758c;
+      animation: fade-sparkle 0.9s forwards ease-out;
     }
 
     @keyframes fade-sparkle {
       0% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.2); }
+      100% { opacity: 0; transform: scale(0.1); }
     }
 
     /* Partículas de Corazón */
@@ -576,25 +575,24 @@
       }
     }
 
-    /* Pide un deseo con estrella fugaz perfecta */
+    /* Pide un deseo con estrella fugaz realista */
     function pideDeseo() {
       var shooter = document.createElement('div');
       shooter.className = 'shooting-star-animated';
       document.body.appendChild(shooter);
 
-      // Generar chispas a lo largo de la estela
       var interval = setInterval(function() {
         var rect = shooter.getBoundingClientRect();
         if (rect.x < 0 || rect.y > window.innerHeight) return;
         var spark = document.createElement('div');
         spark.className = 'sparkle-trail';
-        spark.style.left = (rect.x + Math.random() * 20) + 'px';
-        spark.style.top = (rect.y + Math.random() * 20) + 'px';
+        spark.style.left = (rect.x + Math.random() * 15) + 'px';
+        spark.style.top = (rect.y + Math.random() * 15) + 'px';
         spark.style.width = (Math.random() * 4 + 2) + 'px';
         spark.style.height = spark.style.width;
         document.body.appendChild(spark);
         setTimeout(function(s) { s.remove(); }, 800, spark);
-      }, 50);
+      }, 40);
 
       rainHearts();
 
@@ -602,7 +600,7 @@
         clearInterval(interval);
         shooter.remove();
         alert("🌠 ¡Una estrella fugaz ha cruzado el cielo! Pide un deseo, mi amor... ✨");
-      }, 2000);
+      }, 2100);
     }
 
     function ver(i, e) {
